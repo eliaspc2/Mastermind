@@ -5,7 +5,7 @@ from __future__ import annotations
 import random
 
 
-DEFAULT_NUMBERS = 4
+DEFAULT_NUMBERS = 5
 MIN_NUMBER = 0
 MAX_NUMBER = 10
 MAX_ATTEMPTS = 10
@@ -24,12 +24,14 @@ class RandomOrder:
         return [random.randint(MIN_NUMBER, MAX_NUMBER) for _ in range(self.numbers)]
 
     def guess(self, guess: list[int], sequence: list[int]) -> tuple[int, int]:
-        """Compara a adivinha com a sequência e devolve acertos totais e posições certas."""
+        """Compara a adivinha com a sequência e devolve números errados/certos e posições certas."""
         # Conta quantos números estão certos na posição certa.
         correct_positions = sum(1 for g, s in zip(guess, sequence) if g == s)
         # Conta quantos números existem na sequência, mesmo que estejam noutra posição.
-        correct_numbers = sum(min(guess.count(n), sequence.count(n)) for n in set(guess))
-        return correct_numbers, correct_positions
+        total_correct_numbers = sum(min(guess.count(n), sequence.count(n)) for n in set(guess))
+        # Remove os que já estão na posição certa para ficar só com os fora de posição.
+        correct_wrong_position = total_correct_numbers - correct_positions
+        return correct_wrong_position, correct_positions
 
 
 class Menu:
@@ -40,13 +42,13 @@ class Menu:
         while True:
             print("\n=== Mastermind ===")
             print("1 - Jogar")
-            print("2 - Sair")
+            print("0 - Sair")
             option = input("Escolha uma opção: ").strip()
 
             if option == "1":
                 # Começa uma nova partida.
                 self.menu_jogo()
-            elif option == "2":
+            elif option == "0":
                 print("Saindo do jogo...")
                 return
             else:
@@ -86,9 +88,9 @@ class Menu:
             return False
 
         # Compara a tentativa com a sequência secreta.
-        correct_numbers, correct_positions = game.guess(guess, sequence)
-        print(f"Acertos totais: {correct_numbers}")
-        print(f"Posições corretas: {correct_positions}")
+        correct_wrong_position, correct_positions = game.guess(guess, sequence)
+        print(f"Números certos mas na posição errada: {correct_wrong_position}")
+        print(f"Números certos na posição certa: {correct_positions}")
         return correct_positions == len(sequence)
 
     @staticmethod

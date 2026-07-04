@@ -18,7 +18,7 @@ python main.py
 ## Regras atuais
 
 - A sequência tem por defeito 4 números.
-- Os números são gerados aleatoriamente entre 0 e 10.
+- Os números são gerados aleatoriamente entre 0 e 9.
 - Podes repetir números na tentativa.
 - Tens 10 tentativas para acertar.
 
